@@ -11,8 +11,6 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from numpy import savez_compressed
 
-sketch_path="./data/sketch/"
-photo_path="./data/photo/"
 
 #이미지 이름 저장
 camel_sketch_idx = next(os.walk("./data/sketch/camel/"))[2]
