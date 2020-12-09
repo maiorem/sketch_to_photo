@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=10">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Application Executer</title>
+    <HTA:APPLICATION ID="MyhtaApp" 
+        APPLICATIONNAME="Application Executer" 
+        BORDER="no"
+        CAPTION="yes"
+        SHOWINTASKBAR="yes"
+        SINGLEINSTANCE="yes"
+        SYSMENU="yes"
+        SCROLL="no"
+        WINDOWSTATE="normal">
+    <script type="text/javascript" language="javascript">
+        function RunFile() {
+        WshShell = new ActiveXObject("WScript.Shell");
+        WshShell.Run("python D:/GitHub/sketch_to_photo/Project/code/load_model.py");
+        }
+    </script>
+    <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+</head>
+<body>
+    <input type="file" name="img" id="img" accept="image/*" onchange="setThumbnail(event);">
+    <br>
+    <input type="button" id="button" value="이미지 업로드" onclick="RunFile();"/>
+    <div id="image_container"></div>
+    <div id="sort"></div>
+    <div id="fake_img"></div>
+</body>
+    <script>
+        function setThumbnail(event) { 
+            var reader = new FileReader(); 
+            reader.onload = function(event) { 
+                var img = document.createElement("img"); 
+                img.setAttribute("src", event.target.result); 
+                document.querySelector("div#image_container").appendChild(img); 
+            }; 
+                
+            reader.readAsDataURL(event.target.files[0]); 
+        }
+
+    </script>
+</html>
+
