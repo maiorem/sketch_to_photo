@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch to Photo</title>
+<script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+<html>
+<head>
+    <title>Sketch to Photo</title>
+</head>
+<body>
+    <center>
+    Sketch to Photo<br>
+    <form action="/predict" method="post" enctype="multipart/form-data" id="form">
+        이미지 파일 <input type="file" id="uploadFile"><br>
+        <input type="submit" value="물체 탐지">
+    </form>
+    <span id="result">탐지 결과</span> 
+    </center>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $("#form").submit(function(event) {
+            event.preventDefault(); //폼 제출 방지
+
+            var formData = new FormData();
+            formData.append("file", $("#uploadFile").prop("files")[0]);
+            $.ajax({
+                type: "post",
+                url: "/predict",
+                data: formData, 
+                contentType: false,
+                processData: false,
+                success: function(data){
+                    $("#result").text(data);
+                }
+            });
+        });      
+    </script>        
+</body>
+</html>

@@ -14,12 +14,7 @@
         SYSMENU="yes"
         SCROLL="no"
         WINDOWSTATE="normal">
-    <script type="text/javascript" language="javascript">
-        function RunFile() {
-        WshShell = new ActiveXObject("WScript.Shell");
-        WshShell.Run("python D:/GitHub/sketch_to_photo/Project/code/load_model.py");
-        }
-    </script>
+
     <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
 <body>
@@ -42,6 +37,14 @@
             reader.readAsDataURL(event.target.files[0]); 
         }
 
+    </script>
+    <script type="text/javascript" language="javascript">
+        var img=document.getElementById("img");
+        img_path=img.value
+        function RunFile() {
+            WshShell = new ActiveXObject("WScript.Shell");
+            WshShell.Run("python D:/GitHub/sketch_to_photo/Project/code/load_model.py");
+        }
     </script>
 </html>
 

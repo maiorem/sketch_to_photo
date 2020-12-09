@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch to Photo</title>
+<script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+</head>
+<body>
+    <h1>Sketch to Photo</h1>
+    <form method='post' action="/predict" enctype="multipart/form-data">
+        <input type="file" name="img" id="img" accept="image/*" onchange="setThumbnail(event);">
+        <br>
+        <input type="submit" id="button" value="이미지 업로드"/>
+    </form>
+    <div id="image_container"></div>
+    <div id="sort"></div>
+    <div id="fake_img"></div>
+</body>
+    <script>
+        function setThumbnail(event) { 
+            var reader = new FileReader(); 
+            reader.onload = function(event) { 
+                var img = document.createElement("img"); 
+                img.setAttribute("src", event.target.result); 
+                img.setAttribute("style", "widht:300px; height:300px;");
+                document.querySelector("div#image_container").appendChild(img); 
+            }; 
+                
+            reader.readAsDataURL(event.target.files[0]); 
+        }
+
+        $('#button').submit(function(){
+            $.ajax({
+                url : '/predict',
+                type : 'get',
+                data : img,
+                success : function(data){
+                    console.log(data)
+                    html='';
+                    html+=data;
+                    $('#fake_img').append(html)
+                }
+
+            })
+        })
+
+    </script>
+</html>
+
