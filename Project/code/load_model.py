@@ -1,7 +1,7 @@
 # example of loading a pix2pix model and using it for one-off image translation
-from keras.models import load_model
-from keras.preprocessing.image import img_to_array
-from keras.preprocessing.image import load_img
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.preprocessing.image import load_img
 from numpy import load
 from numpy import expand_dims
 from matplotlib import pyplot
@@ -19,10 +19,10 @@ def load_image(filename, size=(256,256)):
 	return pixels
 
 # load source image
-src_image = load_image('제목 없음.png')
+src_image = load_image('flower.jpg')
 print('Loaded', src_image.shape)
 # load model
-model = load_model('./modelSAVE/model_110400.h5')
+model = load_model('model_002760.h5')
 # generate image from source
 gen_image = model.predict(src_image)
 # scale from [-1,1] to [0,1]

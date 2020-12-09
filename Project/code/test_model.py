@@ -1,31 +1,30 @@
-# example of pix2pix gan for satellite to map image-to-image translation
 from numpy import load
 from numpy import zeros
 from numpy import ones
 from numpy.random import randint
-from keras.optimizers import Adam
-from keras.initializers import RandomNormal
-from keras.models import Model
-from keras.models import Input
-from keras.layers import Conv2D
-from keras.layers import Conv2DTranspose
-from keras.layers import LeakyReLU
-from keras.layers import Activation
-from keras.layers import Concatenate
-from keras.layers import Dropout
-from keras.layers import BatchNormalization
-from keras.layers import LeakyReLU
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.initializers import RandomNormal
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import Conv2DTranspose
+from tensorflow.keras.layers import LeakyReLU
+from tensorflow.keras.layers import Activation
+from tensorflow.keras.layers import Concatenate
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import LeakyReLU
 from matplotlib import pyplot
- 
-# define the discriminator model
-def define_discriminator(image_shape):
-	# weight initialization
+
+# 판별 모델
+def discriminator(image_shape):
+	# kernel_initializaer로 가중치 초기화 => RandomNormal
 	init = RandomNormal(stddev=0.02)
 	# source image input
 	in_src_image = Input(shape=image_shape)
 	# target image input
 	in_target_image = Input(shape=image_shape)
-	# concatenate images channel-wise
+	# 스케치와 사진 병합
 	merged = Concatenate()([in_src_image, in_target_image])
 	# C64
 	d = Conv2D(64, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(merged)
@@ -56,7 +55,7 @@ def define_discriminator(image_shape):
 	model.compile(loss='binary_crossentropy', optimizer=opt, loss_weights=[0.5])
 	return model
  
-# define an encoder block
+# 인코더
 def define_encoder_block(layer_in, n_filters, batchnorm=True):
 	# weight initialization
 	init = RandomNormal(stddev=0.02)
@@ -69,7 +68,7 @@ def define_encoder_block(layer_in, n_filters, batchnorm=True):
 	g = LeakyReLU(alpha=0.2)(g)
 	return g
  
-# define a decoder block
+# 디코더
 def decoder_block(layer_in, skip_in, n_filters, dropout=True):
 	# weight initialization
 	init = RandomNormal(stddev=0.02)
@@ -86,8 +85,8 @@ def decoder_block(layer_in, skip_in, n_filters, dropout=True):
 	g = Activation('relu')(g)
 	return g
  
-# define the standalone generator model
-def define_generator(image_shape=(256,256,3)):
+# 생성 모델 정의
+def generator(image_shape=(256,256,3)):
 	# weight initialization
 	init = RandomNormal(stddev=0.02)
 	# image input
@@ -118,8 +117,8 @@ def define_generator(image_shape=(256,256,3)):
 	model = Model(in_image, out_image)
 	return model
  
-# define the combined generator and discriminator model, for updating the generator
-def define_gan(g_model, d_model, image_shape):
+# 판별자, 생성자 합치는 모델
+def gan(g_model, d_model, image_shape):
 	# make weights in the discriminator not trainable
 	d_model.trainable = False
 	# define the source image
@@ -135,7 +134,7 @@ def define_gan(g_model, d_model, image_shape):
 	model.compile(loss=['binary_crossentropy', 'mae'], optimizer=opt, loss_weights=[1,100])
 	return model
  
-# load and prepare training images
+# 훈련 시킬 진짜 이미지 불러오기
 def load_real_samples(filename):
 	# load compressed arrays
 	data = load(filename)
@@ -146,7 +145,7 @@ def load_real_samples(filename):
 	X2 = (X2 - 127.5) / 127.5
 	return [X1, X2]
  
-# select a batch of random samples, returns images and target
+# 진짜 이미지 샘플에서 랜덤으로 배치사이즈 선택. data와 target으로 리턴
 def generate_real_samples(dataset, n_samples, patch_shape):
 	# unpack dataset
 	trainA, trainB = dataset
@@ -158,7 +157,7 @@ def generate_real_samples(dataset, n_samples, patch_shape):
 	y = ones((n_samples, patch_shape, patch_shape, 1))
 	return [X1, X2], y
  
-# generate a batch of images, returns images and targets
+# 가짜 샘플 이미지 배치 생성, data와 target 리턴
 def generate_fake_samples(g_model, samples, patch_shape):
 	# generate fake instance
 	X = g_model.predict(samples)
@@ -166,7 +165,7 @@ def generate_fake_samples(g_model, samples, patch_shape):
 	y = zeros((len(X), patch_shape, patch_shape, 1))
 	return X, y
  
-# generate samples and save as a plot and save the model
+# 샘플 생성하고 모델과 샘플 저장
 def summarize_performance(step, g_model, dataset, n_samples=3):
 	# select a sample of input images
 	[X_realA, X_realB], _ = generate_real_samples(dataset, n_samples, 1)
@@ -200,8 +199,8 @@ def summarize_performance(step, g_model, dataset, n_samples=3):
 	g_model.save(filename2)
 	print('>Saved: %s and %s' % (filename1, filename2))
  
-# train pix2pix models
-def train(d_model, g_model, gan_model, dataset, n_epochs=200, n_batch=1):
+# pix2pix 모델 학습시키기
+def train(d_model, g_model, gan_model, dataset, n_epochs=150, n_batch=16):
 	# determine the output square shape of the discriminator
 	n_patch = d_model.output_shape[1]
 	# unpack dataset
@@ -228,15 +227,20 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=200, n_batch=1):
 		if (i+1) % (bat_per_epo * 10) == 0:
 			summarize_performance(i, g_model, dataset)
  
-# load image data
-dataset = load_real_samples('sketch_to_photo.npz')
+######### 1. 데이터 : 스케치-사진 페어 데이터셋 로드
+dataset = load_real_samples('flower_strawberry.npz')
 print('Loaded', dataset[0].shape, dataset[1].shape)
-# define input shape based on the loaded dataset
+
 image_shape = dataset[0].shape[1:]
-# define the models
-d_model = define_discriminator(image_shape)
-g_model = define_generator(image_shape)
-# define the composite model
-gan_model = define_gan(g_model, d_model, image_shape)
-# train model
+
+######### 2. 모델 구성
+
+# 모델 1. 판별자
+d_model = discriminator(image_shape)
+# 모델 2. 생성자
+g_model = generator(image_shape)
+# 모델 3. 판별자+생성자를 합치는 모델
+gan_model = gan(g_model, d_model, image_shape)
+
+######### 3. 모델 전체 훈련
 train(d_model, g_model, gan_model, dataset)
