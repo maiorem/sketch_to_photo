@@ -13,17 +13,16 @@ import cv2
 import pandas as pd
 
 
-app=Flask(__name__)
-
+app=Flask(__name__, static_url_path="/static", static_folder="static")
 
 # 메인페이지 라우팅
 @app.route("/")
 @app.route("/index")
 def index():
-    return flask.render_template("index.html")
+    return render_template("index.html")
 
 # 데이터 예측 처리
-@app.route("/predict", methods=['POST'])
+@app.route("/predict", methods=['POST', 'GET'])
 def predict():
     if request.method=='POST' :
 
@@ -45,8 +44,11 @@ def predict():
         plt.imshow(predict[0])
         plt.axis('off')
         plt.savefig('./code/static/out.png')
+        return render_template("index.html", fake_img='out.png')
 
-    return "<img src='{{ url_for('static', out.png) }}'>"
+  
+
+
 
 
 if __name__ == '__main__' :

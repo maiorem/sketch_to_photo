@@ -15,7 +15,9 @@
     </form>
     <div id="image_container"></div>
     <div id="sort"></div>
-    <div id="fake_img"></div>
+    {% if fake_img %}
+        <img src="{{ url_for('static', filename=fake_img) }}">
+    {% endif %}   
 </body>
     <script>
         function setThumbnail(event) { 
@@ -30,15 +32,15 @@
             reader.readAsDataURL(event.target.files[0]); 
         }
 
-        $('#button').submit(function(){
+        function imageup(){
+
             $.ajax({
-                url : '/predict',
+                url : 'http://127.0.0.1:8080/predict',
                 type : 'get',
-                data : img,
                 success : function(data){
                     console.log(data)
                     html='';
-                    html+=data;
+                    html+='<img src='+data+'>';
                     $('#fake_img').append(html)
                 }
 
