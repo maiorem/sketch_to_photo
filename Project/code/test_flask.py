@@ -36,15 +36,15 @@ def predict():
         img = expand_dims(img, 0)
         print(img.shape)
 
-        model = load_model('model_002760.h5')
+        model = load_model('model_087200.h5')
         predict=model.predict(img)
 
         predict = (predict + 1) / 2.0
         # plot the image
         plt.imshow(predict[0])
         plt.axis('off')
-        plt.savefig('./code/static/out.png')
-        return render_template("index.html", fake_img='out.png')
+        plt.savefig('./code/static/out3.png')
+        return render_template("index.html", fake_img='out3.png', name=predict[0].shape)
 
   
 

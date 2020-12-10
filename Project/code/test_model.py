@@ -16,101 +16,109 @@ from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.layers import LeakyReLU
 from matplotlib import pyplot
 
-# 판별 모델
+# 판별 모델 구성
 def discriminator(image_shape):
 	# kernel_initializaer로 가중치 초기화 => RandomNormal
 	init = RandomNormal(stddev=0.02)
-	# source image input
+	# 스케치 이미지 인풋 모델
 	in_src_image = Input(shape=image_shape)
-	# target image input
+	# 사진 이미지 인풋 모델
 	in_target_image = Input(shape=image_shape)
-	# 스케치와 사진 병합
+	# 스케치와 사진 인풋 병합
 	merged = Concatenate()([in_src_image, in_target_image])
-	# C64
+	
 	d = Conv2D(64, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(merged)
 	d = LeakyReLU(alpha=0.2)(d)
-	# C128
+	
 	d = Conv2D(128, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
 	d = LeakyReLU(alpha=0.2)(d)
-	# C256
+	
 	d = Conv2D(256, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
 	d = LeakyReLU(alpha=0.2)(d)
-	# C512
+	
 	d = Conv2D(512, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
 	d = LeakyReLU(alpha=0.2)(d)
-	# second last output layer
+	
 	d = Conv2D(512, (4,4), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
 	d = LeakyReLU(alpha=0.2)(d)
-	# patch output
+
 	d = Conv2D(1, (4,4), padding='same', kernel_initializer=init)(d)
 	patch_out = Activation('sigmoid')(d)
-	# define model
+	
+	# 모델 정의
 	model = Model([in_src_image, in_target_image], patch_out)
-	# compile model
+	# 컴파일
 	opt = Adam(lr=0.0002, beta_1=0.5)
 	model.compile(loss='binary_crossentropy', optimizer=opt, loss_weights=[0.5])
+
+	# 컴파일 한 모델 반환 (훈련x)
 	return model
  
-# 인코더
-def define_encoder_block(layer_in, n_filters, batchnorm=True):
-	# weight initialization
+# 인코더 구성 : U-Net방식. 크기를 줄임.
+def encoder(layer_in, n_filters, batchnorm=True):
+	# 가중치 초기화
 	init = RandomNormal(stddev=0.02)
-	# add downsampling layer
+	# 이전 인코더 노드를 받아 오는 레이어
 	g = Conv2D(n_filters, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(layer_in)
-	# conditionally add batch normalization
+	# 배치노멀라이제이션이 트루면 적용
 	if batchnorm:
 		g = BatchNormalization()(g, training=True)
-	# leaky relu activation
+
 	g = LeakyReLU(alpha=0.2)(g)
+
+	# 레이어 반환
 	return g
  
-# 디코더
-def decoder_block(layer_in, skip_in, n_filters, dropout=True):
-	# weight initialization
+# 디코더 : 크기를 원래대로
+def decoder(layer_in, skip_in, n_filters, dropout=True):
+	# 가중치 초기화
 	init = RandomNormal(stddev=0.02)
-	# add upsampling layer
+	# 이전 디코더를 받아 크기를 올리는 레이어
 	g = Conv2DTranspose(n_filters, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(layer_in)
 	# add batch normalization
 	g = BatchNormalization()(g, training=True)
-	# conditionally add dropout
+	# 드롭아웃이 트루면 드롭아웃
 	if dropout:
 		g = Dropout(0.5)(g, training=True)
-	# merge with skip connection
+	# 디코더 레이어와 인코더 레이어를 가까운 순으로 병합
 	g = Concatenate()([g, skip_in])
-	# relu activation
+
 	g = Activation('relu')(g)
+	# 레이어 반환
 	return g
  
-# 생성 모델 정의
+# 생성 모델 구성
 def generator(image_shape=(256,256,3)):
-	# weight initialization
+
 	init = RandomNormal(stddev=0.02)
-	# image input
+
 	in_image = Input(shape=image_shape)
-	# encoder model
-	e1 = define_encoder_block(in_image, 64, batchnorm=False)
-	e2 = define_encoder_block(e1, 128)
-	e3 = define_encoder_block(e2, 256)
-	e4 = define_encoder_block(e3, 512)
-	e5 = define_encoder_block(e4, 512)
-	e6 = define_encoder_block(e5, 512)
-	e7 = define_encoder_block(e6, 512)
-	# bottleneck, no batch norm and relu
+
+	e1 = encoder(in_image, 64, batchnorm=False)
+	e2 = encoder(e1, 128)
+	e3 = encoder(e2, 256)
+	e4 = encoder(e3, 512)
+	e5 = encoder(e4, 512)
+	e6 = encoder(e5, 512)
+	e7 = encoder(e6, 512)
+
+	# 인코딩 결과인 최종 레이어를 새로운 레이어에 연결 
 	b = Conv2D(512, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(e7)
 	b = Activation('relu')(b)
-	# decoder model
-	d1 = decoder_block(b, e7, 512)
-	d2 = decoder_block(d1, e6, 512)
-	d3 = decoder_block(d2, e5, 512)
-	d4 = decoder_block(d3, e4, 512, dropout=False)
-	d5 = decoder_block(d4, e3, 256, dropout=False)
-	d6 = decoder_block(d5, e2, 128, dropout=False)
-	d7 = decoder_block(d6, e1, 64, dropout=False)
-	# output
+	
+	#디코딩 시작
+	d1 = decoder(b, e7, 512)
+	d2 = decoder(d1, e6, 512)
+	d3 = decoder(d2, e5, 512)
+	d4 = decoder(d3, e4, 512, dropout=False)
+	d5 = decoder(d4, e3, 256, dropout=False)
+	d6 = decoder(d5, e2, 128, dropout=False)
+	d7 = decoder(d6, e1, 64, dropout=False)
+	
 	g = Conv2DTranspose(3, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d7)
 	out_image = Activation('tanh')(g)
 	# define model
@@ -228,7 +236,7 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=150, n_batch=16):
 			summarize_performance(i, g_model, dataset)
  
 ######### 1. 데이터 : 스케치-사진 페어 데이터셋 로드
-dataset = load_real_samples('flower_strawberry.npz')
+dataset = load_real_samples('teapot_strawberry.npz')
 print('Loaded', dataset[0].shape, dataset[1].shape)
 
 image_shape = dataset[0].shape[1:]

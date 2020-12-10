@@ -2,7 +2,7 @@ import numpy as np
 import os
 import glob
 
-a = glob.glob("./data3/sketch/*/*/*")
+a = glob.glob("./data5/sketch/*/*/*")
 
 
 sketch_idx = []
@@ -31,7 +31,7 @@ for i, idx in (enumerate(sketch_idx)):
     print("i : ",i)
     print("idx : ",idx)
     # for j in range(4):
-    img = load_img("./data3/sketch/"+idx)
+    img = load_img("./data5/sketch/"+idx)
     img = img_to_array(img)
     sketch[i] = img
 
@@ -41,7 +41,7 @@ for i, idx in (enumerate(sketch_idx)):
     print("idx : ",idx)
     idx = idx.split("/")[1]+"/"+idx.split("/")[2]
     idx = idx.split("-")[0]
-    img = load_img("./data3/photo/"+ idx+".jpg")
+    img = load_img("./data5/photo/"+ idx+".png")
     img = img_to_array(img)
     photo[i] = img
 
@@ -61,8 +61,8 @@ print(photo[0] == photo[1])
 from numpy import savez_compressed
 
 # sketch: X, photo: Y
-np.save('./npySAVE/sketch_flower_strawberry.npy', arr=sketch)
-np.save('./npySAVE/photo_flower_strawberry.npy', arr=photo)
+np.save('./npySAVE/sketch_teapot_strawberry.npy', arr=sketch)
+np.save('./npySAVE/photo_teapot_strawberry.npy', arr=photo)
 
-filename = 'flower_strawberry.npz'
+filename = 'teapot_strawberry.npz'
 np.savez_compressed(filename, sketch, photo)

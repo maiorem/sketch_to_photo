@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Sketch to Photo</title>
 <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
 </head>
@@ -18,6 +21,7 @@
     {% if fake_img %}
         <img src="{{ url_for('static', filename=fake_img) }}">
     {% endif %}   
+    {{ name }}
 </body>
     <script>
         function setThumbnail(event) { 
@@ -31,21 +35,6 @@
                 
             reader.readAsDataURL(event.target.files[0]); 
         }
-
-        function imageup(){
-
-            $.ajax({
-                url : 'http://127.0.0.1:8080/predict',
-                type : 'get',
-                success : function(data){
-                    console.log(data)
-                    html='';
-                    html+='<img src='+data+'>';
-                    $('#fake_img').append(html)
-                }
-
-            })
-        })
 
     </script>
 </html>
