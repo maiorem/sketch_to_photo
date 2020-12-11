@@ -26,7 +26,7 @@
     </form>
     <div id="image_container"></div>
     {% if fake_img %}
-        <img src="{{ url_for('static', filename=fake_img) }}">
+        <img src="{{ url_for('static', filename=fake_img) }}?v=1.1">
     {% endif %}   
     <br>
     {% if name and label %}

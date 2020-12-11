@@ -54,12 +54,7 @@ def predict():
         return render_template("index.html", fake_img='out.png', name=strawberry, label=teddybear)
 
 
-@app.after_request
-def set_response_headers(response):
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
+
 
 if __name__ == '__main__' :
     app.run(host="127.0.0.1", port="8080")
