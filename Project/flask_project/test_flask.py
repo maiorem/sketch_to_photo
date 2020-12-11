@@ -10,8 +10,7 @@ from numpy import load
 from numpy import expand_dims
 import matplotlib.pyplot as plt
 import cv2
-import pandas as pd
-
+import os
 
 app=Flask(__name__, static_url_path="/static", static_folder="static")
 
@@ -54,7 +53,18 @@ def predict():
         return render_template("index.html", fake_img='out.png', name=strawberry, label=teddybear)
 
 
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['v'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
 
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
 
 if __name__ == '__main__' :
     app.run(host="127.0.0.1", port="8080")
