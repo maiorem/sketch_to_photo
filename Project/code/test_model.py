@@ -121,41 +121,42 @@ def generator(image_shape=(256,256,3)):
 	
 	g = Conv2DTranspose(3, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d7)
 	out_image = Activation('tanh')(g)
-	# define model
+
 	model = Model(in_image, out_image)
 	return model
  
 # 판별자, 생성자 합치는 모델
 def gan(g_model, d_model, image_shape):
-	# make weights in the discriminator not trainable
+	# 판별자 모델 동결
 	d_model.trainable = False
-	# define the source image
+	# 스케치 이미지 인풋 모델 생성
 	in_src = Input(shape=image_shape)
-	# connect the source image to the generator input
+	# 스케치 인풋 모델을 생성자 모델 아웃풋과 연결
 	gen_out = g_model(in_src)
-	# connect the source input and generator output to the discriminator input
+	# 스케치 인풋 모델과 생성자 모델 아웃풋을 판별자 모델 아웃풋과 연결
 	dis_out = d_model([in_src, gen_out])
-	# src image as input, generated image and classification output
+	# 인풋에 스케치, 아웃풋에 생성자, 판별자 모델로 분류해서 모델 선언
 	model = Model(in_src, [dis_out, gen_out])
-	# compile model
+	# 컴파일
 	opt = Adam(lr=0.0002, beta_1=0.5)
 	model.compile(loss=['binary_crossentropy', 'mae'], optimizer=opt, loss_weights=[1,100])
+	#모델로 반환
 	return model
  
-# 훈련 시킬 진짜 이미지 불러오기
+# 훈련 시킬 사진 이미지 불러오기
 def load_real_samples(filename):
-	# load compressed arrays
+
 	data = load(filename)
-	# unpack arrays
+	# 스케치(X1)와 사진(X2) 분류
 	X1, X2 = data['arr_0'], data['arr_1']
-	# scale from [0,255] to [-1,1]
+	# 스케일링 : [0,255] 을 [-1,1]로
 	X1 = (X1 - 127.5) / 127.5
 	X2 = (X2 - 127.5) / 127.5
 	return [X1, X2]
  
 # 진짜 이미지 샘플에서 랜덤으로 배치사이즈 선택. data와 target으로 리턴
 def generate_real_samples(dataset, n_samples, patch_shape):
-	# unpack dataset
+
 	trainA, trainB = dataset
 	# choose random instances
 	ix = randint(0, trainA.shape[0], n_samples)

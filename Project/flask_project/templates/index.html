@@ -29,7 +29,9 @@
         <img src="{{ url_for('static', filename=fake_img) }}">
     {% endif %}   
     <br>
-    <div id="textBox">{{ name }}</div>
+    {% if name and label %}
+        <div id="textBox">딸기일 확률은 {{ name }}%, 테디베어일 확률은 {{ label }} % 입니다.</div>
+    {% endif %} 
 </body>
     <script>
         function setThumbnail(event) { 

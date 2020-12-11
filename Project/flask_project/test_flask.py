@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, url_for
 from tensorflow.keras.models import load_model
 import numpy as np
 import imageio
@@ -27,7 +27,10 @@ def predict():
     if request.method=='POST' :
 
         file=request.files['img']
-        if not file : return render_template('index.html', label="NoFiles")
+        if not file : return render_template('index.html')
+        
+        # sketch=request.files['img']
+        # sketch.save("./flask_project/static/in.png")
 
         img=imageio.imread(file)
         img=cv2.resize(img, (256, 256))
@@ -36,20 +39,27 @@ def predict():
         img = expand_dims(img, 0)
         print(img.shape)
 
-        model = load_model('./flask_project/model_087200.h5')
+        vgg16=load_model('./flask_project/bear_strawberry_softmax.h5')
+        strawberry=format(vgg16.predict(img)[0][0] * 100, '.1f')
+        teddybear=format(vgg16.predict(img)[0][1] * 100, '.1f')
+
+
+        model = load_model('./flask_project/model_031200.h5')
         predict=model.predict(img)
 
         predict = (predict + 1) / 2.0
-        # plot the image
         plt.imshow(predict[0])
         plt.axis('off')
-        plt.savefig('./flask_project/static/out3.png')
-        return render_template("index.html", fake_img='out3.png', name=predict[0].shape)
-
-  
+        plt.savefig('./flask_project/static/out.png')
+        return render_template("index.html", fake_img='out.png', name=strawberry, label=teddybear)
 
 
-
+@app.after_request
+def set_response_headers(response):
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 if __name__ == '__main__' :
     app.run(host="127.0.0.1", port="8080")
