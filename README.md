@@ -10,4 +10,6 @@ ProjectName : 순Gan포착
 ## 사용기술
 Language : Python    
 Tool : Visual Code Studio     
-API : Tensorflow, Keras, GAN     
+API : Tensorflow, Keras
+Framewordk : Flask      
+Model : Pix2Pix(CGan)     
