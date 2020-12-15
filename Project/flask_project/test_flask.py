@@ -40,16 +40,20 @@ def predict():
         label=np.argmax(img)
 
         label=vgg16.predict(label)
+        strawberry=format(vgg16.predict(img)[0][0] * 100, '.1f')
+        teapot=format(vgg16.predict(img)[0][1] * 100, '.1f')
+        teddybear=format(vgg16.predict(img)[0][2] * 100, '.1f')
         percentage='';
+
         if label == '0' :
             label='딸기'
-            percentage=format(vgg16.predict(img)[0][0] * 100, '.1f')
+            percentage=strawberry
         elif label == '1' :
             label='차주전자'
-            percentage=format(vgg16.predict(img)[0][1] * 100, '.1f')
+            percentage=teapot
         elif label == '2' :
             label='테디베어'
-            percentage=format(vgg16.predict(img)[0][2] * 100, '.1f')
+            percentage=teddybear
 
         # strawberry=format(vgg16.predict(img)[0][0] * 100, '.1f')
         # teddybear=format(vgg16.predict(img)[0][1] * 100, '.1f')

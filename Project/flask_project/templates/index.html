@@ -29,7 +29,7 @@
         <img src="{{ url_for('static', filename=fake_img) }}?v=1.1">
     {% endif %}   
     <br>
-    {% if name and label %}
+    {% if percentage and label %}
         <div id="textBox"> {{ label }}일 확률이 {{ percentage }} % 입니다.</div>
     {% endif %} 
 </body>
