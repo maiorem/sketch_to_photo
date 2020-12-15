@@ -3,7 +3,7 @@ from numpy import zeros
 from numpy import ones
 from numpy.random import randint
 from keras.optimizers import Adam
-from keras.initializers import RandomNormal
+from keras.initializers import RandomNormal, HeNormal
 from keras.models import Model
 from keras.models import Input
 from keras.layers import Conv2D
@@ -15,6 +15,7 @@ from keras.layers import Dropout
 from keras.layers import BatchNormalization
 from keras.layers import LeakyReLU
 from matplotlib import pyplot
+import matplotlib.pyplot as plt
 
 
 # define the discriminator model
@@ -29,23 +30,23 @@ def define_discriminator(image_shape):
 	merged = Concatenate()([in_src_image, in_target_image])
 	# C64
 	d = Conv2D(64, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(merged)
-	d = LeakyReLU(alpha=0.2)(d)
+	d = LeakyReLU(alpha=0.01)(d)
 	# C128
 	d = Conv2D(128, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = LeakyReLU(alpha=0.2)(d)
+	d = LeakyReLU(alpha=0.01)(d)
 	# C256
 	d = Conv2D(256, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = LeakyReLU(alpha=0.2)(d)
+	d = LeakyReLU(alpha=0.01)(d)
 	# C512
 	d = Conv2D(512, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = LeakyReLU(alpha=0.2)(d)
+	d = LeakyReLU(alpha=0.01)(d)
 	# second last output layer
 	d = Conv2D(512, (4,4), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = LeakyReLU(alpha=0.2)(d)
+	d = LeakyReLU(alpha=0.01)(d)
 	# patch output
 	d = Conv2D(1, (4,4), padding='same', kernel_initializer=init)(d)
 	patch_out = Activation('sigmoid')(d)
@@ -66,7 +67,7 @@ def define_encoder_block(layer_in, n_filters, batchnorm=True):
 	if batchnorm:
 		g = BatchNormalization()(g, training=True)
 	# leaky relu activation
-	g = LeakyReLU(alpha=0.2)(g)
+	g = LeakyReLU(alpha=0.01)(g)
 	return g
  
 # define a decoder block
@@ -89,7 +90,7 @@ def decoder_block(layer_in, skip_in, n_filters, dropout=True):
 # define the standalone generator model
 def define_generator(image_shape=(256,256,3)):
 	# weight initialization
-	init = RandomNormal(stddev=0.02)
+	init = HeNormal()
 	# image input
 	in_image = Input(shape=image_shape)
 	# encoder model
@@ -206,7 +207,7 @@ def summarize_performance(step, g_model, dataset, n_samples=3):
 	print('>Saved: %s and %s' % (filename1, filename2))
  
 # train pix2pix models
-def train(d_model, g_model, gan_model, dataset, n_epochs=150, n_batch=16):
+def train(d_model, g_model, gan_model, dataset, n_epochs=1, n_batch=32):
 	# determine the output square shape of the discriminator
 	n_patch = d_model.output_shape[1]
 	# unpack dataset
@@ -216,6 +217,10 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=150, n_batch=16):
 	# calculate the number of training iterations
 	n_steps = bat_per_epo * n_epochs
 	# manually enumerate epochs
+	d_loss1_list = []
+	d_loss2_list = []
+	g_loss_list = []
+
 	for i in range(n_steps):
 		# select a batch of real samples
 		[X_realA, X_realB], y_real = generate_real_samples(dataset, n_batch, n_patch)
@@ -223,18 +228,44 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=150, n_batch=16):
 		X_fakeB, y_fake = generate_fake_samples(g_model, X_realA, n_patch)
 		# update discriminator for real samples
 		d_loss1 = d_model.train_on_batch([X_realA, X_realB], y_real)
+		d_loss1_list.append(d_loss1)
 		# update discriminator for generated samples
 		d_loss2 = d_model.train_on_batch([X_realA, X_fakeB], y_fake)
+		d_loss2_list.append(d_loss2)
 		# update the generator
 		g_loss, _, _ = gan_model.train_on_batch(X_realA, [y_real, X_realB])
+		g_loss_list.append(g_loss)
 		# summarize performance
 		print('>%d, d1[%.3f] d2[%.3f] g[%.3f]' % (i+1, d_loss1, d_loss2, g_loss))
 		# summarize model performance
 		if (i+1) % (bat_per_epo * 10) == 0:
 			summarize_performance(i, g_model, dataset)
  
+		# epochs = len(iterations)
+	x_axis = range(0,130)
+
+	fig,ax = plt.subplots()
+	ax.plot(x_axis, d_loss1_list, label="d_loss1")
+	ax.plot(x_axis, d_loss2_list, label="d_loss2")
+
+	ax.legend()
+	plt.ylabel("Loss")
+	plt.xlabel("Iteration")
+	plt.title("GAN Loss")
+	plt.show()
+
+	fig,ax = plt.subplots()
+	ax.plot(x_axis, g_loss_list, label="g_loss")
+
+	ax.legend()
+	plt.ylabel("Loss")
+	plt.xlabel("Iteration")
+	plt.title("GAN Loss")
+	plt.show()
+
+
 # load image data
-dataset = load_real_samples('berry_bear.npz')
+dataset = load_real_samples('./pix2pix/berry_bear.npz')
 print('Loaded', dataset[0].shape, dataset[1].shape)
 # Loaded (4164, 256, 256, 3) (4164, 256, 256, 3)
 # define input shape based on the loaded dataset
@@ -245,18 +276,18 @@ g_model = define_generator(image_shape)
 # define the composite model
 gan_model = define_gan(g_model, d_model, image_shape)
 # train model
-# train(d_model, g_model, gan_model, dataset)
+train(d_model, g_model, gan_model, dataset)
 
 
-print("============== 판별자 ================")
-d_model.summary()
-print("output shape: ", d_model.output_shape[1]) #output shape:  (None, 16, 16, 1)
+# print("============== 판별자 ================")
+# d_model.summary()
+# print("output shape: ", d_model.output_shape[1]) #output shape:  (None, 16, 16, 1)
 
-print("============== 생성기 ================")
-g_model.summary()
+# print("============== 생성기 ================")
+# g_model.summary()
 
-print("=============== GAN =================")
-gan_model.summary()
+# print("=============== GAN =================")
+# gan_model.summary()
 
 
 
