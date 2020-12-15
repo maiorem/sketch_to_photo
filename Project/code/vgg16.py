@@ -17,11 +17,12 @@ training_datagen = ImageDataGenerator(rescale=1./255,
                                 rotation_range=5,
                                 zoom_range=1.2,
                                 shear_range=0.7,
-                                fill_mode='nearest'
+                                fill_mode='nearest', 
+                                validation_split=0.2
                                 )
 validation_datagen = ImageDataGenerator(rescale=1./255)
 
-train_generator = training_datagen.flow_from_directory(# YOUR CODE HERE
+train_generator = training_datagen.flow_from_directory(
         TRAINING_DIR,
         target_size=(256, 256),
         batch_size=64,
@@ -44,22 +45,27 @@ model.add(Flatten())
 model.add(Dense(256))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
-model.add(Dense(2,activation="softmax"))
+model.add(Dense(2, activation="softmax"))
 
 
 #3. 컴파일, 훈련
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 
-earlystopping = EarlyStopping(monitor='val_loss', mode='min', patience=3, verbose=1)
+earlystopping = EarlyStopping(monitor='val_loss', mode='min', patience=20, verbose=1)
+reduce_lr=ReduceLROnPlateau(monitor='val_loss', patience=5, factor=0.2)
 model.fit(train_generator,
-            steps_per_epoch=len(train_generator),
+            steps_per_epoch=len(train_generator)//64,
             validation_data=valid_generator,
-            validation_steps=len(valid_generator),
-            epochs=21,
+            validation_steps=len(valid_generator)//64,
+            epochs=100,
             verbose=1,
-            callbacks=[earlystopping]
+            callbacks=[earlystopping, reduce_lr]
             )
 
+loss, acc=model.evaluate_generator(valid_generator)
+
+print('loss : ', loss)
+print('acc : ', acc)
 
 model.save('bear_strawberry_softmax.h5')

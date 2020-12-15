@@ -20,7 +20,7 @@
 <body>
     <h1>Sketch to Photo</h1>
     <form method='post' action="/predict" enctype="multipart/form-data">
-        <input type="file" name="img" id="img" accept="image/*" onchange="setThumbnail(event);">
+        <input type="file" name="img" id="img" accept="image/*" class="upload-box upload-plus">
         <br>
         <input type="submit" id="button" value="이미지 업로드"/>
     </form>
@@ -30,37 +30,22 @@
     {% endif %}   
     <br>
     {% if name and label %}
-        <div id="textBox">딸기일 확률은 {{ name }}%, 테디베어일 확률은 {{ label }} % 입니다.</div>
+        <div id="textBox"> {{ label }}일 확률이 {{ percentage }} % 입니다.</div>
     {% endif %} 
 </body>
     <script>
         function setThumbnail(event) { 
-            var reader = new FileReader(); 
-            reader.onload = function(event) { 
-                var img = document.createElement("img"); 
-                img.setAttribute("src", event.target.result); 
-                img.setAttribute("style", "widht:300px; height:300px;");
-                document.querySelector("div#image_container").appendChild(img); 
-            }; 
-                
-            reader.readAsDataURL(event.target.files[0]); 
+            var input = this;
+            if (input.files && input.files.length) {
+                var reader = new FileReader();
+                this.enabled = false
+                reader.onload = (function (e) {
+                    $("div#image_container").html(['<img class="thumb" src="', e.target.result, '" title="', escape(e.name), '" style="widht:300px; height:300px;" />'].join(''))
+                });
+            reader.readAsDataURL(input.files[0]);
+            }
         }
-
-        $('#button').submit(function(){
-            $.ajax({
-                url : 'http://127.0.0.1:8080/predict',
-                type : 'get',
-                data : img,
-                success : function(data){
-                    console.log(data)
-                    html='';
-                    html+='<img src='+data+'>';
-                    $('#fake_img').append(html)
-                }
-
-            })
-        })
-
+        $('#img').change(setThumbnail);
     </script>
 </html>
 

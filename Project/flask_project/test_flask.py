@@ -27,9 +27,6 @@ def predict():
 
         file=request.files['img']
         if not file : return render_template('index.html')
-        
-        # sketch=request.files['img']
-        # sketch.save("./flask_project/static/in.png")
 
         img=imageio.imread(file)
         img=cv2.resize(img, (256, 256))
@@ -39,9 +36,23 @@ def predict():
         print(img.shape)
 
         vgg16=load_model('./flask_project/bear_strawberry_softmax.h5')
-        strawberry=format(vgg16.predict(img)[0][0] * 100, '.1f')
-        teddybear=format(vgg16.predict(img)[0][1] * 100, '.1f')
 
+        label=np.argmax(img)
+
+        label=vgg16.predict(label)
+        percentage='';
+        if label == '0' :
+            label='딸기'
+            percentage=format(vgg16.predict(img)[0][0] * 100, '.1f')
+        elif label == '1' :
+            label='차주전자'
+            percentage=format(vgg16.predict(img)[0][1] * 100, '.1f')
+        elif label == '2' :
+            label='테디베어'
+            percentage=format(vgg16.predict(img)[0][2] * 100, '.1f')
+
+        # strawberry=format(vgg16.predict(img)[0][0] * 100, '.1f')
+        # teddybear=format(vgg16.predict(img)[0][1] * 100, '.1f')
 
         model = load_model('./flask_project/model_031200.h5')
         predict=model.predict(img)
@@ -50,7 +61,7 @@ def predict():
         plt.imshow(predict[0])
         plt.axis('off')
         plt.savefig('./flask_project/static/out.png')
-        return render_template("index.html", fake_img='out.png', name=strawberry, label=teddybear)
+        return render_template("index.html", fake_img='out.png', percentage=percentage, label=label)
 
 
 def dated_url_for(endpoint, **values):
