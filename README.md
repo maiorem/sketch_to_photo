@@ -13,3 +13,11 @@ Tool : Visual Studio Code
 API : Tensorflow, Keras, Numpy, OpenCv        
 Framework : Flask      
 Model : GAN_Pix2Pix,VGG16     
+
+## 참조
+ * DATA SETS : [스케치와 사진 페어 데이터셋](http://sketchy.eye.gatech.edu/)       
+ * 관련논문 : [lisa-fan : pix2pix](https://lisa.fan/Resources/SketchGAN/sketch-image-translation.pdf)      
+ * 슬라이드 : [lisa-fan : PPT](https://lisa.fan/Resources/SketchGAN/sketchganslides.pdf)        
+ 
+
+ 
