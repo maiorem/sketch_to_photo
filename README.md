@@ -16,7 +16,9 @@ Model : GAN_Pix2Pix,VGG16
 
 ## 참조
  * DATA SETS : [스케치와 사진 페어 데이터셋](http://sketchy.eye.gatech.edu/)       
- * 관련논문 : [lisa-fan : Sketch to Image Translation using GANs](https://lisa.fan/Resources/SketchGAN/sketch-image-translation.pdf)      
+ * 관련논문 :        
+     - [Sketch to Image Translation using GANs](https://lisa.fan/Resources/SketchGAN/sketch-image-translation.pdf)      
+     - [Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/pdf/1611.07004.pdf)       
  * 슬라이드 : [lisa-fan : PPT](https://lisa.fan/Resources/SketchGAN/sketchganslides.pdf)        
  
 
