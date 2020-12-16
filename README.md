@@ -8,10 +8,10 @@ ProjectName : Sketch to Photo using GAN
 팀원 : 박은지, 신여명, 오수연     
 
 ## 사용기술
-Language : Python, HTML5, Javascript    
+Language : Python        
 Tool : Visual Studio Code      
 API : Tensorflow, Keras, Numpy, OpenCv        
-Framework : Flask      
+Web : Flask, HTML5, Javascript       
 Model : GAN_Pix2Pix,VGG16     
 
 ## 참조
