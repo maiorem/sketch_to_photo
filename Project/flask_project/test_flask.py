@@ -35,28 +35,26 @@ def predict():
         img = expand_dims(img, 0)
         print(img.shape)
 
-        vgg16=load_model('./flask_project/bear_strawberry_softmax.h5')
+        vgg16=load_model('./flask_project/bear_strawberry_pot.h5')
 
-        label=np.argmax(img)
-
-        label=vgg16.predict(label)
+        label=vgg16.predict(img)
+        label=np.argmax(label)
+        print('decoding_label :', label)
+        print(type(label))
         strawberry=format(vgg16.predict(img)[0][0] * 100, '.1f')
         teapot=format(vgg16.predict(img)[0][1] * 100, '.1f')
         teddybear=format(vgg16.predict(img)[0][2] * 100, '.1f')
         percentage='';
 
-        if label == '0' :
+        if label == 0 :
             label='딸기'
             percentage=strawberry
-        elif label == '1' :
+        elif label == 1 :
             label='차주전자'
             percentage=teapot
-        elif label == '2' :
+        elif label == 2 :
             label='테디베어'
             percentage=teddybear
-
-        # strawberry=format(vgg16.predict(img)[0][0] * 100, '.1f')
-        # teddybear=format(vgg16.predict(img)[0][1] * 100, '.1f')
 
         model = load_model('./flask_project/model_031200.h5')
         predict=model.predict(img)
