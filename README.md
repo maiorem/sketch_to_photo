@@ -20,6 +20,7 @@ Model : GAN_Pix2Pix,VGG16
      - [Sketch to Image Translation using GANs](https://lisa.fan/Resources/SketchGAN/sketch-image-translation.pdf)      
      - [Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/pdf/1611.07004.pdf)       
  * 슬라이드 : [lisa-fan : PPT](https://lisa.fan/Resources/SketchGAN/sketchganslides.pdf)        
+ * CoLab 예제 : [colab](https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/tutorials/generative/pix2pix.ipynb)         
  
 
  
