@@ -29,23 +29,23 @@ def define_discriminator(image_shape):
 	merged = Concatenate()([in_src_image, in_target_image])
 	# C64
 	d = Conv2D(64, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(merged)
-	d = ELU()(d)
+	d = LeakyReLU(alpha=0.2)(d)
 	# C128
 	d = Conv2D(128, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = ELU()(d)
+	d = LeakyReLU(alpha=0.2)(d)
 	# C256
 	d = Conv2D(256, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = ELU()(d)
+	d = LeakyReLU(alpha=0.2)(d)
 	# C512
 	d = Conv2D(512, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = ELU()(d)
+	d = LeakyReLU(alpha=0.2)(d)
 	# second last output layer
 	d = Conv2D(512, (4,4), padding='same', kernel_initializer=init)(d)
 	d = BatchNormalization()(d)
-	d = ELU()(d)
+	d = LeakyReLU(alpha=0.2)(d)
 	# patch output
 	d = Conv2D(1, (4,4), padding='same', kernel_initializer=init)(d)
 	patch_out = Activation('sigmoid')(d)
@@ -206,7 +206,7 @@ def summarize_performance(step, g_model, dataset, n_samples=3):
 	print('>Saved: %s and %s' % (filename1, filename2))
  
 # train pix2pix models
-def train(d_model, g_model, gan_model, dataset, n_epochs=1, n_batch=32):
+def train(d_model, g_model, gan_model, dataset, n_epochs=300, n_batch=16):
 	# determine the output square shape of the discriminator
 	n_patch = d_model.output_shape[1]
 	# unpack dataset
@@ -264,7 +264,7 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1, n_batch=32):
 
 
 # load image data
-dataset = load_real_samples('./pix2pix/berry_bear.npz')
+dataset = load_real_samples('./pix2pix/berry_bear_pot_car.npz')
 print('Loaded', dataset[0].shape, dataset[1].shape)
 # Loaded (4164, 256, 256, 3) (4164, 256, 256, 3)
 # define input shape based on the loaded dataset
