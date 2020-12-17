@@ -44,16 +44,16 @@ model.add(Flatten())
 model.add(Dense(256))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
-model.add(Dense(3, activation="softmax"))
+model.add(Dense(4, activation="softmax"))
 
 
 #3. 컴파일, 훈련
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 
-earlystopping = EarlyStopping(monitor='val_acc', mode='max', patience=20, verbose=1)
-reduce_lr=ReduceLROnPlateau(monitor='val_acc', patience=5, factor=0.2)
-ck=ModelCheckpoint('./ck/vgg16-{epoch:02d}-{val_acc:.4f}.hdf5', save_weights_only=True, save_best_only=True, monitor='val_acc', mode='max', verbose=1)
+earlystopping = EarlyStopping(monitor='val_loss', mode='min', patience=20, verbose=1)
+reduce_lr=ReduceLROnPlateau(monitor='val_loss', patience=5, factor=0.2)
+ck=ModelCheckpoint('./ck/vgg16-{epoch:02d}-{val_loss:.4f}.hdf5', save_weights_only=True, save_best_only=True, monitor='val_loss', mode='min', verbose=1)
 model.fit(train_generator,
             steps_per_epoch=len(train_generator),
             validation_data=(valid_generator),
@@ -65,4 +65,4 @@ model.fit(train_generator,
 
 
 
-model.save('bear_strawberry_pot.h5')
+model.save('category_4.h5')
