@@ -39,8 +39,7 @@ def predict():
 
         label=vgg16.predict(img)
         label=np.argmax(label)
-        print('decoding_label :', label)
-        print(type(label))
+
         car=format(vgg16.predict(img)[0][0] * 100, '.1f')
         strawberry=format(vgg16.predict(img)[0][1] * 100, '.1f')
         teapot=format(vgg16.predict(img)[0][2] * 100, '.1f')
