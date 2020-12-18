@@ -60,7 +60,7 @@ def predict():
             label='테디베어'
             percentage=teddybear
 
-        model = load_model('./flask_project/model_061650.h5')
+        model = load_model('./flask_project/model_042750.h5')
         predict=model.predict(img)
 
         predict = (predict + 1) / 2.0
