@@ -23,5 +23,6 @@ Model : GAN_Pix2Pix,VGG16
  * [Tensorflow 공식문서](https://www.tensorflow.org/tutorials/generative/pix2pix)
  * [CoLab 예제](https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/tutorials/generative/pix2pix.ipynb)         
  
-
+## 시연
+[Flask 시연 영상](https://youtu.be/9ftY67cGDOA)         
  
