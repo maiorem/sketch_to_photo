@@ -22,9 +22,7 @@ Model : GAN_Pix2Pix,VGG16
  * [슬라이드](https://lisa.fan/Resources/SketchGAN/sketchganslides.pdf)        
  * [Tensorflow 공식문서](https://www.tensorflow.org/tutorials/generative/pix2pix)
  * [CoLab 예제](https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/tutorials/generative/pix2pix.ipynb)         
- 
-## 시연
-[Flask 시연 영상](https://youtu.be/9ftY67cGDOA)         
+
 
 ## ▶ 목표   
 
@@ -56,8 +54,42 @@ Model : GAN_Pix2Pix,VGG16
 
 ## ▶ 모델 구성
 
+### Generator(생성자) 모델 구성
+#### Encoder
+
+
+#### Decoder
+
+#### U-Net 구조의 Generator
+
+
+### Discriminalator(판별자) 모델 구성
+
+
+### GAN 모델 구성
+
+
+
 ## ▶ 훈련
+
+
+## [모델 구성부터 훈련까지 코드 전체 보기](https://github.com/maiorem/sketch_to_photo/blob/main/Project/pix2pix/pix2pix_00_main.py)
+<br />
 
 ## ▶ 결과 확인
 
+### 분류모델 구성
+ * VGG16 전이학습 모델을 가져와서 sketch 모델을 라벨 별로 분류하고 모델 저장
+ 
+[sketch 분류하기](https://github.com/maiorem/sketch_to_photo/blob/main/Project/pix2pix/vgg16.py)        
+<br />
 
+### Flask로 분류모델과 Pix2Pix모델 불러오기
+ * 분류모델의 predict 값을 label과 각 카테고리별 확률을 둘 다 가져와서 HTML 파일로 전송
+ * Pix2Pix모델의 predict 값을 디코딩하여 서버에 저장한 후 HTML로 출력
+
+[FLASK 코드](https://github.com/maiorem/sketch_to_photo/blob/main/Project/flask_project/test_flask.py)           
+<br />
+ 
+## ▶ 시연
+[Flask 시연 영상](https://youtu.be/9ftY67cGDOA)        
