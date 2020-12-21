@@ -28,9 +28,11 @@ Model : GAN_Pix2Pix,VGG16
 
 ## ▶ 목표   
 
-#### ◎ 스케치 이미지를 사진으로 바꾸는 이미지 생성(GAN) 모델 만들기      
+### ◎ 스케치 이미지를 사진으로 바꾸는 이미지 생성(GAN) 모델 만들기      
 ![sketch](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fwnaed%2FbtqQIV2opBd%2F2QsiIbR9Dmz4UdnHmTX8bK%2Fimg.jpg)
 <br />
+### 단지 새로운 이미지를 생성하는 것이 아니라, 스케치 이미지를 사진 이미지로 변환하는 Image to Image 작업이므로 관련 논문인 Pix2Pix를 참고하여 스케치와 사진 데이터의 쌍을 만들어 모델에 훈련시킨다.         
+
 ## ▶ 데이터 수집과 전처리       
 
 ### ◎ [스케치와 사진 데이터셋](http://sketchy.eye.gatech.edu/) 
