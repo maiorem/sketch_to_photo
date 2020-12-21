@@ -63,7 +63,7 @@ Model : GAN_Pix2Pix,VGG16
 #### U-Net 구조의 Generator
 
 
-### Discriminalator(판별자) 모델 구성
+### Discriminator(판별자) 모델 구성
 
 
 ### GAN 모델 구성
