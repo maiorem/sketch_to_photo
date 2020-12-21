@@ -25,4 +25,15 @@ Model : GAN_Pix2Pix,VGG16
  
 ## 시연
 [Flask 시연 영상](https://youtu.be/9ftY67cGDOA)         
- 
+
+## ▶ 목표   
+
+## ▶ 데이터 수집과 전처리       
+
+## ▶ 모델 구성
+
+## ▶ 훈련
+
+## ▶ 결과 확인
+
+
