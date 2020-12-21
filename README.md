@@ -23,5 +23,20 @@ Model : GAN_Pix2Pix,VGG16
  * [Tensorflow 공식문서](https://www.tensorflow.org/tutorials/generative/pix2pix)
  * [CoLab 예제](https://colab.research.google.com/github/tensorflow/docs/blob/master/site/en/tutorials/generative/pix2pix.ipynb)         
  
+## 시연
+[Flask 시연 영상](https://youtu.be/9ftY67cGDOA)         
 
- 
+## ▶ 목표   
+
+#### 스케치 이미지를 사진으로 바꾸는 이미지 생성(GAN) 모델 만들기      
+![sketch](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fwnaed%2FbtqQIV2opBd%2F2QsiIbR9Dmz4UdnHmTX8bK%2Fimg.jpg)
+<br />
+## ▶ 데이터 수집과 전처리       
+
+## ▶ 모델 구성
+
+## ▶ 훈련
+
+## ▶ 결과 확인
+
+
