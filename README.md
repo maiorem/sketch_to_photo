@@ -28,10 +28,19 @@ Model : GAN_Pix2Pix,VGG16
 
 ## ▶ 목표   
 
-#### 스케치 이미지를 사진으로 바꾸는 이미지 생성(GAN) 모델 만들기      
+#### ◎ 스케치 이미지를 사진으로 바꾸는 이미지 생성(GAN) 모델 만들기      
 ![sketch](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fwnaed%2FbtqQIV2opBd%2F2QsiIbR9Dmz4UdnHmTX8bK%2Fimg.jpg)
 <br />
 ## ▶ 데이터 수집과 전처리       
+
+### Pix2Pix 사용을 위해서는 스케치-샘플이미지 쌍이 필요하다. 테스트를 위해 위 링크, [스케치와 사진 데이터셋](http://sketchy.eye.gatech.edu/) 에서 총 125개 카테고리 12500개 사진이미지와 75,471개 스케치 이미지를 다운 받고 그 중 네개의 카테고리를 선택했다.       
+
+### Image Segmentation
+훈련 시킬 사진 이미지에 배경이 강렬할 수록 우리가 원하는 객체를 명확히 인식하여 훈련시키기가 힘들다. 때문에 객체를 주변 사물로부터 분리시켜 줌.          
+[Image Segmentation](https://github.com/maiorem/sketch_to_photo/blob/main/Project/pix2pix/pix2pix_imagesegmentation.py)
+
+### 데이터를 모델에서 효율적으로 실행시키기 위해, 쌍이 되는 형태로 numpy로 저장한다.
+[스케치와 사진을 짝으로 맺어 npz로 저장하는 코드](https://github.com/maiorem/sketch_to_photo/blob/main/Project/pix2pix/pix2pix_0_save_new.py)           
 
 ## ▶ 모델 구성
 
