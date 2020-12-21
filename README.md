@@ -34,7 +34,7 @@ Model : GAN_Pix2Pix,VGG16
 ## ▶ 데이터 수집과 전처리       
 
 ### [스케치와 사진 데이터셋](http://sketchy.eye.gatech.edu/) 
-[dataset](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FSDqup%2FbtqQKuYDzlo%2F5bGyjnufrfovOPX1NdE1J0%2Fimg.png)        
+![dataset](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FSDqup%2FbtqQKuYDzlo%2F5bGyjnufrfovOPX1NdE1J0%2Fimg.png)        
 총 125개 카테고리와 12500개의 사진, 사진을 보고 그린 스케치들이 존재하는 데이터셋 사용.       
 해당 데이터 중 테스트를 위한 네개의 카테고리를 선별.       
 
