@@ -3,8 +3,9 @@ import cv2 as cv
 from scipy.ndimage import label
 import os
 import glob
+import matplotlib.pyplot as plt
 
-def image_seg(img) :
+def image_seg(img, idx) :
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     ret, thresh = cv.threshold(gray, 0, 255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU)
 
@@ -45,6 +46,8 @@ def image_seg(img) :
     cv.imshow("result", img)
     cv.waitKey(0)
     cv.destroyAllWindows()
+    plt.imshow(result)
+    plt.savefig(idx)
 
 
 a = glob.glob("./data/photo/*/*")
@@ -62,4 +65,4 @@ print(len(photo_idx)) #276
 
 for idx in photo_idx :
     img = cv.imread(idx)
-    image_seg(img)
+    image_seg(img, idx)
