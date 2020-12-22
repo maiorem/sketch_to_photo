@@ -108,3 +108,13 @@ Model : GAN_Pix2Pix,VGG16
  
 ## ▶ 시연
 [Flask 시연 영상](https://youtu.be/9ftY67cGDOA)        
+
+<br />
+
+## ▶ PPT
+[Google Presentation](https://drive.google.com/file/d/1tk8vf_pHthygBoWDpEdXRcnBdmPGgAGO/view?usp=sharing)
+
+<br />
+
+## ▶ 발표영상
+
