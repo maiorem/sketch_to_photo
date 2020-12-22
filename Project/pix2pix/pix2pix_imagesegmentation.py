@@ -45,7 +45,7 @@ def image_seg(img, idx) :
 
     cv.imshow("result", img)
     cv.waitKey(0)
-    cv.destroyAllWindows()
+    result=cv.destroyAllWindows()
     plt.imshow(result)
     plt.savefig(idx)
 
