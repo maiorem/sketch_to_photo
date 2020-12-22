@@ -59,22 +59,26 @@ Model : GAN_Pix2Pix,VGG16
 ![encoder](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fee08Xh%2FbtqQ0PuuAVF%2FdwJgg2BvSz7ceGmSXkjjlk%2Fimg.png)     
  * 다운샘플링으로 쌓아 갈 레이어를 반환
 <br /> 
+
 #### Decoder
 ![decoder](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FvmNJc%2FbtqQ7UnXkRN%2Fi4FcIe9cA9Ke9lkIKkSV71%2Fimg.png)      
  * 업샘플링으로 이미지 데이터를 디코딩 할 레이어를 반환.           
  이 때, 인코딩 레이어와 병합하여 데이터 손실을 막는다. (U-Net 구조)
 <br />
+
 #### U-Net 구조의 Generator
 ![generator](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FE9qHS%2FbtqQ0QmyDFp%2FekfexEFnG7wxtmEZVDXRk1%2Fimg.png)      
 
 <br />
 
 ### Discriminator(판별자) 모델 구성
+
 ![discriminator](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FHhPXb%2FbtqQ1MRRAbH%2FQUD52A1kdVFBHSGykk7PQk%2Fimg.png)    
  * patchGan으로 전체 데이터가 아닌 patch로 데이터의 진짜 가짜 여부를 판별하게 함.
 <br />
 
 ### GAN 모델 구성
+
 ![gan](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd2Vu1O%2FbtqQXBQ1RWs%2FZ3rkruKjF3Klc3qo25kvy0%2Fimg.png)      
 
 <br />
