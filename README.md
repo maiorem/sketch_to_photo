@@ -117,4 +117,4 @@ Model : GAN_Pix2Pix,VGG16
 <br />
 
 ## ▶ 발표영상
-
+[Bit Presentation](https://youtu.be/XyOLFU5W8zQ)
